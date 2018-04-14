@@ -41,8 +41,7 @@ export FORCE_UNSAFE_CONFIGURE=1 # Workaround for compiling "tar" as root.
 spack install r@3.3.0
 spack -h > /dev/null		# Creates /opt/spack
 # Create symlinks.
-ln -svf /opt/spack/linux-debian7-x86_/gcc-4.7/r-3.3.0-*/bin/R /usr/bin/R
-ln -svf /opt/spack/linux-debian7-x86_/gcc-4.7/r-3.3.0-*/bin/Rscript /usr/bin/Rscript
+for prog in R Rscript; do ln -svf /opt/spack/linux-*/*/r-3.3.0-*/bin/$prog /usr/bin/$prog; done
 
 %test
 R --version
