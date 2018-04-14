@@ -26,12 +26,18 @@ cd $prefix
 command -v spack || wget --no-check-certificate $url -O - | tar -xz --strip-components=1
 rm -f *.md *.ini LICENSE NOTICE
 cd -
+# Spack creates a config file after discovering compilers, but caches the
+# results which makes it difficult to add on c++, fortran, etc once a compiler
+# version is found.  Therefore remove the cached compiler first to always
+# auto-detect compilers.
+compiler=gcc@4.7
+spack compiler rm $compiler || true
 spack compiler find		# Detect compiler.
+spack compiler info $compiler
 # Install older version of openssl because building openssl@1.0.2k fails with:
 # make[1]: *** No rule to make target `../include/openssl/bio.h', needed by `cryptlib.o'.  Stop.
 spack install openssl@1.0.2j
 export FORCE_UNSAFE_CONFIGURE=1 # Workaround for compiling "tar" as root.
-export F77=gfortran # Try to fix R configure: error: cannot compile a simple Fortran program
 spack install r@3.3.0
 # spack -h > /dev/null		# Creates /opt/spack
 
