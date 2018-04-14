@@ -39,7 +39,10 @@ spack compiler info $compiler
 spack install openssl@1.0.2j
 export FORCE_UNSAFE_CONFIGURE=1 # Workaround for compiling "tar" as root.
 spack install r@3.3.0
-# spack -h > /dev/null		# Creates /opt/spack
+spack -h > /dev/null		# Creates /opt/spack
+# Create symlinks.
+ln -svf /opt/spack/linux-debian7-x86_/gcc-4.7/r-3.3.0-*/bin/R /usr/bin/R
+ln -svf /opt/spack/linux-debian7-x86_/gcc-4.7/r-3.3.0-*/bin/Rscript /usr/bin/Rscript
 
-# %test
-# R --version
+%test
+R --version
