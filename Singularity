@@ -13,9 +13,10 @@ deps_runtime="python environment-modules procps"
 deps_build_spack="gcc g++ curl make bzip2 patch perl unzip gfortran"
 deps_build="wget $deps_runtime $deps_build_spack"
 # Don't thrash the Debian server; only install missing packages.
-echo $deps_build | tr " " "\n" | sort > /tmp/deps_build
-dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/installed
-missing=$(join -a 1 -v 1 /tmp/deps_build /tmp/installed)
+echo $deps_build | tr " " "\n" | sort > .deps_needed
+dpkg-query -f '${binary:Package}\n' -W | sort > .deps_installed
+missing=$(join -a 1 -v 1 .deps_needed .deps_installed)
+rm -f .deps_needed .deps_installed
 [ -z "$missing" ] || { apt-get update && apt-get -y install $missing ; }
 # pod2man is missing from the perl package, but is needed to compile openssl.
 [ -f /usr/bin/pod2man ] || apt-get -y install --reinstall perl
