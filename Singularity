@@ -4,7 +4,8 @@ From: debian:wheezy
 
 %environment
 SPACK_ROOT=/
-export SPACK_ROOT
+LC_ALL=C
+export SPACK_ROOT LC_ALL
 
 %post
 # Update repo and install dependencies.
