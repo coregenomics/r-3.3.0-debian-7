@@ -23,7 +23,7 @@ echo $deps | tr " " "\n" | sort > .deps_needed
 dpkg-query -f '${binary:Package}\n' -W | sed 's#:.*##' | sort > .deps_installed
 missing=$(join -a 1 -v 1 .deps_needed .deps_installed)
 rm -f .deps_needed .deps_installed
-[ -z "$missing" ] || { apt-get update && apt-get -y install $missing && apt-get upgrade ; }
+[ -z "$missing" ] || { apt-get update && apt-get -y install $missing && apt-get -y upgrade ; }
 
 # Install newer libcurl because R needs libcurl >= 7.28 with https support but
 # Wheezy only supports libcurl 7.26.
