@@ -9,7 +9,7 @@ export SPACK_ROOT LC_ALL
 
 %post
 # Update repo and install dependencies.
-deps_runtime="python"
+deps_runtime="python environment-modules procps"
 deps_build_spack="gcc g++ curl make bzip2 patch perl unzip gfortran"
 deps_build="wget $deps_runtime $deps_build_spack"
 # Don't thrash the Debian server; only install missing packages.
@@ -41,8 +41,20 @@ spack install openssl@1.0.2j
 export FORCE_UNSAFE_CONFIGURE=1 # Workaround for compiling "tar" as root.
 spack install r@3.3.0
 spack -h > /dev/null		# Creates /opt/spack
-# Create symlinks.
-for prog in R Rscript; do ln -svf /opt/spack/linux-*/*/r-3.3.0-*/bin/$prog /usr/bin/$prog; done
+
+# Create a wrapper around spack and environmental modules.
+cat <<EOF > /usr/bin/launch
+#!/bin/bash
+set -e
+source /etc/profile.d/modules.sh
+source /share/spack/setup-env.sh
+spack load r@3.3.0 curl libxml2 pkg-config zlib openssl
+exec \$@
+EOF
+chmod +x /usr/bin/launch
 
 %test
-R --version
+launch R --version
+
+%runscript
+launch R $@
